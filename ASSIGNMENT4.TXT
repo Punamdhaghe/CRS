@@ -1,0 +1,725 @@
+SQL> SELECT *
+  2  FROM EMP;
+
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO                                   
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------                                   
+      7369 SMITH      CLERK           7902 17-DEC-80        800                    20                                   
+      7499 ALLEN      SALESMAN        7698 20-FEB-81       1600        300         30                                   
+      7521 WARD       SALESMAN        7698 22-FEB-81       1250        500         30                                   
+      7566 JONES      MANAGER         7839 02-APR-81       2975                    20                                   
+      7654 MARTIN     SALESMAN        7698 28-SEP-81       1250       1400         30                                   
+      7698 BLAKE      MANAGER         7839 01-MAY-81       2850                    30                                   
+      7782 CLARK      MANAGER         7839 09-JUN-81       2450                    10                                   
+      7788 SCOTT      ANALYST         7566 19-APR-87       3000                    20                                   
+      7839 KING       PRESIDENT            17-NOV-81       5000                    10                                   
+      7844 TURNER     SALESMAN        7698 08-SEP-81       1500          0         30                                   
+      7876 ADAMS      CLERK           7788 23-MAY-87       1100                    20                                   
+      7900 JAMES      CLERK           7698 03-DEC-81        950                    30                                   
+      7902 FORD       ANALYST         7566 03-DEC-81       3000                    20                                   
+      7934 MILLER     CLERK           7782 23-JAN-82       1300                    10                                   
+
+14 rows selected.
+
+SQL> SELECT *
+  2  FROM DEPT;
+
+    DEPTNO DNAME          LOC                                                                                           
+---------- -------------- -------------                                                                                 
+        10 ACCOUNTING     NEW YORK                                                                                      
+        20 RESEARCH       DALLAS                                                                                        
+        30 SALES          CHICAGO                                                                                       
+        40 OPERATIONS     BOSTON                                                                                        
+
+SQL> SELECT ENAME,LOC
+  2  FROM EMP INNER JOIN DEPT
+  3  ON EMP.DEPTNO=DEPT.DEPTNO;
+
+ENAME      LOC                                                                                                          
+---------- -------------                                                                                                
+SMITH      DALLAS                                                                                                       
+ALLEN      CHICAGO                                                                                                      
+WARD       CHICAGO                                                                                                      
+JONES      DALLAS                                                                                                       
+MARTIN     CHICAGO                                                                                                      
+BLAKE      CHICAGO                                                                                                      
+CLARK      NEW YORK                                                                                                     
+SCOTT      DALLAS                                                                                                       
+KING       NEW YORK                                                                                                     
+TURNER     CHICAGO                                                                                                      
+ADAMS      DALLAS                                                                                                       
+JAMES      CHICAGO                                                                                                      
+FORD       DALLAS                                                                                                       
+MILLER     NEW YORK                                                                                                     
+
+14 rows selected.
+
+SQL> SELECT DNAME,SAL
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPT.DEPTNO=EMP.DEPTNO
+  4  WHERE DNAME='ACCOUNTING;
+ERROR:
+ORA-01756: quoted string not properly terminated 
+
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT DNAME,SAL
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPT.DEPTNO=EMP.DEPTNO
+  4* WHERE DNAME='ACCOUNTING'
+SQL> /
+
+DNAME                 SAL                                                                                               
+-------------- ----------                                                                                               
+ACCOUNTING           2450                                                                                               
+ACCOUNTING           5000                                                                                               
+ACCOUNTING           1300                                                                                               
+
+SQL> SELECT DNAME,12*SAL ANNUAL_SAL
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPT.DEPTNO=EMP.DEPTNO
+  4  WHERE SAL>2340;
+
+DNAME          ANNUAL_SAL                                                                                               
+-------------- ----------                                                                                               
+RESEARCH            35700                                                                                               
+SALES               34200                                                                                               
+ACCOUNTING          29400                                                                                               
+RESEARCH            36000                                                                                               
+ACCOUNTING          60000                                                                                               
+RESEARCH            36000                                                                                               
+
+6 rows selected.
+
+SQL> SELECT ENAME,DNAME
+  2  FROM EMP INNER JOIN DEPT
+  3  ON EMP.DEPTNO=DEPT.DEPTNO
+  4  WHERE DNAME LIKE '%A%';
+
+ENAME      DNAME                                                                                                        
+---------- --------------                                                                                               
+SMITH      RESEARCH                                                                                                     
+ALLEN      SALES                                                                                                        
+WARD       SALES                                                                                                        
+JONES      RESEARCH                                                                                                     
+MARTIN     SALES                                                                                                        
+BLAKE      SALES                                                                                                        
+CLARK      ACCOUNTING                                                                                                   
+SCOTT      RESEARCH                                                                                                     
+KING       ACCOUNTING                                                                                                   
+TURNER     SALES                                                                                                        
+ADAMS      RESEARCH                                                                                                     
+JAMES      SALES                                                                                                        
+FORD       RESEARCH                                                                                                     
+MILLER     ACCOUNTING                                                                                                   
+
+14 rows selected.
+
+SQL> SELECT ENAME,DNAME
+  2  FROM EMP INNER JOIN DEPT
+  3  ON EMP.DEPTNO=DEPT.DEPTNO
+  4  WHERE JOB='SALESMAN';
+
+ENAME      DNAME                                                                                                        
+---------- --------------                                                                                               
+ALLEN      SALES                                                                                                        
+WARD       SALES                                                                                                        
+MARTIN     SALES                                                                                                        
+TURNER     SALES                                                                                                        
+
+SQL> SELECT DNAME,JOB
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPT.DEPTNO=EMP.DEPTNO
+  4  WHERE JOB LIKE 'A%' AND DNAME='A%';
+
+no rows selected
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT DNAME,JOB
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPT.DEPTNO=EMP.DEPTNO
+  4* WHERE JOB LIKE 'S%' AND DNAME='S%'
+SQL> /
+
+no rows selected
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT DNAME,JOB
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPT.DEPTNO=EMP.DEPTNO
+  4* WHERE JOB LIKE 'S%' OR DNAME='S%'
+SQL> /
+
+DNAME          JOB                                                                                                      
+-------------- ---------                                                                                                
+SALES          SALESMAN                                                                                                 
+SALES          SALESMAN                                                                                                 
+SALES          SALESMAN                                                                                                 
+SALES          SALESMAN                                                                                                 
+
+SQL> SELECT DNAME,MGRNO
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPT.DEPTNO=EMP.DEPTNO
+  4  WHERE MGRNO=7839;
+WHERE MGRNO=7839
+      *
+ERROR at line 4:
+ORA-00904: "MGRNO": invalid identifier 
+
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT DNAME,MGR NO
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPT.DEPTNO=EMP.DEPTNO
+  4* WHERE MGR NO=7839
+SQL> /
+WHERE MGR NO=7839
+          *
+ERROR at line 4:
+ORA-00920: invalid relational operator 
+
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT DNAME,MGR
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPT.DEPTNO=EMP.DEPTNO
+  4* WHERE MGR=7839
+SQL> /
+
+DNAME                 MGR                                                                                               
+-------------- ----------                                                                                               
+RESEARCH             7839                                                                                               
+SALES                7839                                                                                               
+ACCOUNTING           7839                                                                                               
+
+SQL> SELECT DNAME,HIREDATE
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPT.DEPTNO=EMP.DEPTNO
+  4  WHERE HIREDATE>'31-DEC-83' AND DNAME='ACCOUNTING' OR DNAME='RESEARCH';
+
+DNAME          HIREDATE                                                                                                 
+-------------- ---------                                                                                                
+RESEARCH       17-DEC-80                                                                                                
+RESEARCH       02-APR-81                                                                                                
+RESEARCH       19-APR-87                                                                                                
+RESEARCH       23-MAY-87                                                                                                
+RESEARCH       03-DEC-81                                                                                                
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT DNAME,HIREDATE
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPT.DEPTNO=EMP.DEPTNO
+  4* WHERE HIREDATE>'31-DEC-83' AND DNAME IN('ACCOUNTING','RESEARCH')
+SQL> /
+
+DNAME          HIREDATE                                                                                                 
+-------------- ---------                                                                                                
+RESEARCH       19-APR-87                                                                                                
+RESEARCH       23-MAY-87                                                                                                
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT DNAME,HIREDATE
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPT.DEPTNO=EMP.DEPTNO
+  4* WHERE HIREDATE>'31-DEC-83' AND DNAME ='ACCOUNTING' OR DNAME='RESEARCH'
+SQL> /
+
+DNAME          HIREDATE                                                                                                 
+-------------- ---------                                                                                                
+RESEARCH       17-DEC-80                                                                                                
+RESEARCH       02-APR-81                                                                                                
+RESEARCH       19-APR-87                                                                                                
+RESEARCH       23-MAY-87                                                                                                
+RESEARCH       03-DEC-81                                                                                                
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT DNAME,HIREDATE
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPT.DEPTNO=EMP.DEPTNO
+  4* WHERE HIREDATE>'31-DEC-83' AND DNAME IN('ACCOUNTING','RESEARCH')
+SQL> /
+
+DNAME          HIREDATE                                                                                                 
+-------------- ---------                                                                                                
+RESEARCH       19-APR-87                                                                                                
+RESEARCH       23-MAY-87                                                                                                
+
+SQL> SELECT ENAME,DNAME
+  2  FROM EMP INNER JOIN DEPT
+  3  ON EMP.DEPTNO=DEPT.DEPTNO
+  4  WHERE COMM IS NOT NULL AND DEPTNO IN(10,30);
+WHERE COMM IS NOT NULL AND DEPTNO IN(10,30)
+                           *
+ERROR at line 4:
+ORA-00918: column ambiguously defined 
+
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT ENAME,DNAME
+  2  FROM EMP INNER JOIN DEPT
+  3  ON EMP.DEPTNO=DEPT.DEPTNO
+  4  WHERE COMM IS NOT NULL 
+  5* AND DEPTNO IN(10,30)
+SQL> /
+AND DEPTNO IN(10,30)
+    *
+ERROR at line 5:
+ORA-00918: column ambiguously defined 
+
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT ENAME,DNAME
+  2  FROM EMP INNER JOIN DEPT
+  3  ON EMP.DEPTNO=DEPT.DEPTNO
+  4  WHERE COMM IS NOT NULL 
+  5* AND DEPTNO=10 OR DEPTNO=30
+SQL> /
+AND DEPTNO=10 OR DEPTNO=30
+                 *
+ERROR at line 5:
+ORA-00918: column ambiguously defined 
+
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT ENAME,DNAME
+  2  FROM EMP INNER JOIN DEPT
+  3  ON EMP.DEPTNO=DEPT.DEPTNO
+  4  WHERE COMM IS NOT NULL 
+  5* AND DEPT=10 OR DEP=30
+SQL> /
+AND DEPT=10 OR DEP=30
+               *
+ERROR at line 5:
+ORA-00904: "DEP": invalid identifier 
+
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT ENAME,DNAME
+  2  FROM EMP INNER JOIN DEPT
+  3  ON EMP.DEPTNO=DEPT.DEPTNO
+  4  WHERE COMM IS NOT NULL 
+  5* AND DEPT=10 OR DEPT=30
+SQL> /
+AND DEPT=10 OR DEPT=30
+               *
+ERROR at line 5:
+ORA-00904: "DEPT": invalid identifier 
+
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT ENAME,DNAME
+  2  FROM EMP INNER JOIN DEPT
+  3  ON EMP.DEPTNO=DEPT.DEPTNO
+  4  WHERE COMM IS NOT NULL 
+  5* AND DEPTNO=10 OR DEPTNO=30
+SQL> /
+AND DEPTNO=10 OR DEPTNO=30
+                 *
+ERROR at line 5:
+ORA-00918: column ambiguously defined 
+
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT ENAME,DNAME
+  2  FROM EMP INNER JOIN DEPT
+  3  ON EMP.DEPTNO=DEPT.DEPTNO
+  4  WHERE COMM IS NOT NULL 
+  5* AND DEPTNO IN(10,30)
+SQL> /
+AND DEPTNO IN(10,30)
+    *
+ERROR at line 5:
+ORA-00918: column ambiguously defined 
+
+
+SQL> SELECT DNAME,EMPNO
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPT.DEPTNO=EMP.DEPTNO
+  4  WHERE EMPNO IN(7839,7902) AND DNAME='NEW YORK';
+
+no rows selected
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT DNAME,EMPNO
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPT.DEPTNO=EMP.DEPTNO
+  4* WHERE EMPNO IN(7839,7902) AND LOC ='NEW YORK'
+SQL> /
+
+DNAME               EMPNO                                                                                               
+-------------- ----------                                                                                               
+ACCOUNTING           7839                                                                                               
+
+SQL> SELECT LOC,AVG(SAL)
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPT.DEPTNO=EMP.DEPTNO
+  4  WHERE ENAME NOT LIKE '_%A%';
+SELECT LOC,AVG(SAL)
+       *
+ERROR at line 1:
+ORA-00937: not a single-group group function 
+
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT LOC,AVG(SAL)
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPT.DEPTNO=EMP.DEPTNO
+  4  GROUP BY LOC
+  5* WHERE ENAME NOT LIKE '_%A%'
+SQL> /
+WHERE ENAME NOT LIKE '_%A%'
+*
+ERROR at line 5:
+ORA-00933: SQL command not properly ended 
+
+
+SQL> SELECT LOC,AVG(SAL)
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPT.DEPTNO=EMP.DEPTNO
+  4  GROUP BY LOC
+  5  WHERE ENAME NOT LIKE '_%A%';
+WHERE ENAME NOT LIKE '_%A%'
+*
+ERROR at line 5:
+ORA-00933: SQL command not properly ended 
+
+
+SQL> SELECT DNAME,EMPNO AS EMPID
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPT.DEPTNO=EMP.DEPTNO
+  4  WHERE JOB='CLERK' AND MGR IS NOT NULL;
+
+DNAME               EMPID                                                                                               
+-------------- ----------                                                                                               
+RESEARCH             7369                                                                                               
+RESEARCH             7876                                                                                               
+SALES                7900                                                                                               
+ACCOUNTING           7934                                                                                               
+
+SQL> SELECT DNAME,SUM(SAL)
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPT.DEPTNO=EMP.DEPT
+  4  GROUP BY SUM(SAL)
+  5  HAVING COUNT(*)>=4;
+GROUP BY SUM(SAL)
+         *
+ERROR at line 4:
+ORA-00934: group function is not allowed here 
+
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT DNAME,SUM(SAL)
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPT.DEPTNO=EMP.DEPT
+  4  GROUP BY SUM(SAL)
+  5* HAVING COUNT(*)>=4
+SQL> SELECT DNAME,EMP NO
+  2  
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> SELECT DNAME,EMPNO
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPT.DEPTNO=EMP.DEPTNO
+  4  WHERE JOB IN('MANAGER','CLERK');
+
+DNAME               EMPNO                                                                                               
+-------------- ----------                                                                                               
+RESEARCH             7369                                                                                               
+RESEARCH             7566                                                                                               
+SALES                7698                                                                                               
+ACCOUNTING           7782                                                                                               
+RESEARCH             7876                                                                                               
+SALES                7900                                                                                               
+ACCOUNTING           7934                                                                                               
+
+7 rows selected.
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT DNAME,EMPNO,JOB
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPT.DEPTNO=EMP.DEPTNO
+  4* WHERE JOB IN('MANAGER','CLERK')
+SQL> /
+
+DNAME               EMPNO JOB                                                                                           
+-------------- ---------- ---------                                                                                     
+RESEARCH             7369 CLERK                                                                                         
+RESEARCH             7566 MANAGER                                                                                       
+SALES                7698 MANAGER                                                                                       
+ACCOUNTING           7782 MANAGER                                                                                       
+RESEARCH             7876 CLERK                                                                                         
+SALES                7900 CLERK                                                                                         
+ACCOUNTING           7934 CLERK                                                                                         
+
+7 rows selected.
+
+SQL> SELECT DNAME,SUM(SAL)
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPT.DEPTNO=EMP.DEPT
+  4  HAVING COUNT(*)>=4;
+ON DEPT.DEPTNO=EMP.DEPT
+               *
+ERROR at line 3:
+ORA-00904: "EMP"."DEPT": invalid identifier 
+
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT DNAME,SUM(SAL)
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPT.DEPTNO=EMP.DEPTNO
+  4* HAVING COUNT(*)>=4
+SQL> /
+SELECT DNAME,SUM(SAL)
+       *
+ERROR at line 1:
+ORA-00937: not a single-group group function 
+
+
+SQL> SELECT ENAME,DNAME
+  2  FROM EMP INNER JOIN DEPT
+  3  ON EMP.DEPTNO=DEPT.DEPTNO
+  4  WHERE COMM IS NOT NULL
+  5  AND EMP.DEPTNO IN(10,30);
+
+ENAME      DNAME                                                                                                        
+---------- --------------                                                                                               
+ALLEN      SALES                                                                                                        
+WARD       SALES                                                                                                        
+MARTIN     SALES                                                                                                        
+TURNER     SALES                                                                                                        
+
+SQL> SELECT DNAME,EMPNO
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPT.DEPTNO=EMP.DEPTNO
+  4  WHERE EMPNO IN(7839,7902) AND LOC='NEW YORK';
+
+DNAME               EMPNO                                                                                               
+-------------- ----------                                                                                               
+ACCOUNTING           7839                                                                                               
+
+SQL> SELECT LOC,AVG(SAL)
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPT.DEPTNO=EMP.DEPTNO
+  4  WHERE ENAME LIKE'_A%'
+  5  GROUP BY LOC;
+
+LOC             AVG(SAL)                                                                                                
+------------- ----------                                                                                                
+CHICAGO             1150                                                                                                
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT LOC,AVG(SAL)
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPT.DEPTNO=EMP.DEPTNO
+  4  WHERE ENAME NOT LIKE'_A%'
+  5* GROUP BY LOC
+SQL> /
+
+LOC             AVG(SAL)                                                                                                
+------------- ----------                                                                                                
+NEW YORK      2916.66667                                                                                                
+CHICAGO       1983.33333                                                                                                
+DALLAS              2175                                                                                                
+
+SQL> SELECT ENAME,LOC
+  2  FROM EMP INNER JOIN DEPT
+  3  ON EMP.DEPTNO=DEPT.DEPTNO
+  4  WHERE JOB='MANAGER' AND MGR=7839;
+
+ENAME      LOC                                                                                                          
+---------- -------------                                                                                                
+JONES      DALLAS                                                                                                       
+BLAKE      CHICAGO                                                                                                      
+CLARK      NEW YORK                                                                                                     
+
+SQL> SELECT DNAME,COUNT(*)
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPT.DEPTNO=EMP.DEPT
+  4  GROUP BY DNAME
+  5  HAVING COUNT(*)>=4;
+ON DEPT.DEPTNO=EMP.DEPT
+               *
+ERROR at line 3:
+ORA-00904: "EMP"."DEPT": invalid identifier 
+
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT DNAME,COUNT(*)
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPT.DEPTNO=EMP.DEPTNO
+  4  GROUP BY DNAME
+  5* HAVING COUNT(*)>=4
+SQL> /
+
+DNAME            COUNT(*)                                                                                               
+-------------- ----------                                                                                               
+RESEARCH                5                                                                                               
+SALES                   6                                                                                               
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT DNAME,COUNT(*)
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPT.DEPTNO=EMP.DEPTNO
+  4  WHERE JOB IN('MANAGER','CLERK')
+  5* GROUP BY DNAME
+SQL> /
+
+DNAME            COUNT(*)                                                                                               
+-------------- ----------                                                                                               
+ACCOUNTING              2                                                                                               
+RESEARCH                3                                                                                               
+SALES                   2                                                                                               
+
+SQL> SELECT DNAME,MGR
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPTDEPTNO=EMP.DEPTNO
+  4  WHERE MGR NOT=7839;
+WHERE MGR NOT=7839
+             *
+ERROR at line 4:
+ORA-00920: invalid relational operator 
+
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT DNAME,MGR
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPTDEPTNO=EMP.DEPTNO
+  4* WHERE MGR IS NOT=7839
+SQL> /
+WHERE MGR IS NOT=7839
+                *
+ERROR at line 4:
+ORA-00908: missing NULL keyword 
+
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT DNAME,MGR
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPTDEPTNO=EMP.DEPTNO
+  4* WHERE MGR IS <> 7839
+SQL> /
+WHERE MGR IS <> 7839
+             *
+ERROR at line 4:
+ORA-00908: missing NULL keyword 
+
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT DNAME,MGR
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPTDEPTNO=EMP.DEPTNO
+  4* WHERE MGR IS NOT <> 7839
+SQL> /
+WHERE MGR IS NOT <> 7839
+                 *
+ERROR at line 4:
+ORA-00908: missing NULL keyword 
+
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT DNAME,MGR
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPTDEPTNO=EMP.DEPTNO
+  4* WHERE MGR IS NOT <>= 7839
+SQL> /
+WHERE MGR IS NOT <>= 7839
+                 *
+ERROR at line 4:
+ORA-00908: missing NULL keyword 
+
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT DNAME,MGR
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPTDEPTNO=EMP.DEPTNO
+  4* WHERE MGR!= 7839
+SQL> /
+ON DEPTDEPTNO=EMP.DEPTNO
+   *
+ERROR at line 3:
+ORA-00904: "DEPTDEPTNO": invalid identifier 
+
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT DNAME,MGR
+  2  FROM DEPT INNER JOIN EMP
+  3  ON DEPT.DEPTNO=EMP.DEPTNO
+  4* WHERE MGR!= 7839
+SQL> /
+
+DNAME                 MGR                                                                                               
+-------------- ----------                                                                                               
+RESEARCH             7902                                                                                               
+SALES                7698                                                                                               
+SALES                7698                                                                                               
+SALES                7698                                                                                               
+RESEARCH             7566                                                                                               
+SALES                7698                                                                                               
+RESEARCH             7788                                                                                               
+SALES                7698                                                                                               
+RESEARCH             7566                                                                                               
+ACCOUNTING           7782                                                                                               
+
+10 rows selected.
+
+SQL> SPOOL OFF
